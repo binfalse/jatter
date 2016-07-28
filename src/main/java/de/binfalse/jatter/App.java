@@ -19,13 +19,21 @@
  */
 package de.binfalse.jatter;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.text.SimpleDateFormat;
 
 import org.apache.camel.Exchange;
 import org.apache.camel.Processor;
 import org.apache.camel.builder.RouteBuilder;
 import org.apache.camel.main.Main;
+import org.apache.commons.cli.CommandLine;
+import org.apache.commons.cli.CommandLineParser;
+import org.apache.commons.cli.DefaultParser;
+import org.apache.commons.cli.HelpFormatter;
+import org.apache.commons.cli.Option;
+import org.apache.commons.cli.Options;
 import org.jivesoftware.smackx.jiveproperties.JivePropertiesManager;
 
 import de.binfalse.jatter.processors.JabberMessageProcessor;
@@ -49,6 +57,15 @@ public class App
 		"yyyy-MM-dd HH:mm:ss");
 	
 	
+	public static void help (Options options, String msg)
+	{
+		System.out.println (msg);
+		System.out.println ();
+		new HelpFormatter ().printHelp ("java -jar jatter.jar -c CONFIG", options);
+		System.exit (1);
+	}
+	
+	
 	/**
 	 * Run jatter's main.
 	 *
@@ -59,7 +76,52 @@ public class App
 	 */
 	public static void main (String[] args) throws Exception
 	{
-		startJatter (args[0]);
+		args = new String[] { "" };
+		
+		Options options = new Options ();
+		
+		Option conf = new Option ("c", "config", true, "config file path");
+		conf.setRequired (false);
+		options.addOption (conf);
+		
+		Option t = new Option ("t", "template", false, "show a config template");
+		t.setRequired (false);
+		options.addOption (t);
+		
+		Option h = new Option ("h", "help", false, "show help");
+		h.setRequired (false);
+		options.addOption (h);
+		
+		CommandLineParser parser = new DefaultParser ();
+		CommandLine cmd;
+		
+		try
+		{
+			cmd = parser.parse (options, args);
+			if (cmd.hasOption ("h"))
+				throw new RuntimeException ("showing the help page");
+		}
+		catch (Exception e)
+		{
+			help (options, e.getMessage ());
+			return;
+		}
+		
+		if (cmd.hasOption ("t"))
+		{
+			System.out.println ();
+			BufferedReader br = new BufferedReader (new InputStreamReader (App.class
+				.getClassLoader ().getResourceAsStream ("config.properties.template")));
+			while (br.ready ())
+				System.out.println (br.readLine ());
+			br.close ();
+			System.exit (0);
+		}
+		
+		if (!cmd.hasOption ("c"))
+			help (options, "a config file is required for running jatter");
+		
+		startJatter (cmd.getOptionValue ("c"));
 	}
 	
 	
