@@ -1,0 +1,41 @@
+###############################################################################################
+#
+# JABBER
+#
+# the following configures the jabber-side of jatter.
+#
+# lets assume the bot is suppossed to listen with the account USERNAME@SERVER
+# and the jabber server daemon at SERVER is running on port PORT
+# and the passwort for USERNAME@SERVER is PASSWORD
+# and your account is CONTACT@OTHERSERVER
+# that is CONTACT@OTHERSERVER is allowed to send twitter updates and gets the news from twitter
+#
+jabber.server=SERVER
+jabber.user=USERNAME
+jabber.password=PASSWORD
+jabber.contact=CONTACT@OTHERSERVER
+jabber.port=PORT
+###############################################################################################
+
+
+###############################################################################################
+#
+# TWITTER
+#
+# the follwoing configures the twitter-side of jatter.
+#
+# the pollingintervall defines how often (in ms) the bot should ask twitter for updates,
+#     so 60000 means "every minute" -- don't ask to often or twitter will block the requests
+# the consumer information will be provided by twitter when you register this application
+# the accesstoken will also be provided by twitter,
+      they are necessary to get access to your twitter account
+# location information can be provided to tag your tweets with a location
+#
+twitter.pollingintervall=60000
+twitter.consumer.key=
+twitter.consumer.secret=
+twitter.accesstoken=
+twitter.accesstoken.secret=
+twitter.location.latitude=
+twitter.location.longitude=
+###############################################################################################
