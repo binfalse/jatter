@@ -36,6 +36,7 @@ import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 import org.jivesoftware.smackx.jiveproperties.JivePropertiesManager;
 
+import de.binfalse.bflog.LOGGER;
 import de.binfalse.jatter.processors.JabberMessageProcessor;
 import de.binfalse.jatter.processors.TwitterStatusProcessor;
 import de.binfalse.jatter.processors.TwitterUpdatePreprocessor;
@@ -86,6 +87,15 @@ public class App
 		t.setRequired (false);
 		options.addOption (t);
 		
+		Option v = new Option ("v", "verbose", false, "print information messages");
+		v.setRequired (false);
+		options.addOption (v);
+		
+		Option d = new Option ("d", "debug", false,
+			"print debugging messages incl stack traces");
+		d.setRequired (false);
+		options.addOption (d);
+		
 		Option h = new Option ("h", "help", false, "show help");
 		h.setRequired (false);
 		options.addOption (h);
@@ -116,6 +126,15 @@ public class App
 			System.exit (0);
 		}
 		
+		if (cmd.hasOption ("v"))
+			LOGGER.setMinLevel (LOGGER.INFO);
+		
+		if (cmd.hasOption ("d"))
+		{
+			LOGGER.setMinLevel (LOGGER.DEBUG);
+			LOGGER.setLogStackTrace (true);
+		}
+		
 		if (!cmd.hasOption ("c"))
 			help (options, "a config file is required for running jatter");
 		
@@ -133,26 +152,32 @@ public class App
 	 */
 	public static void startJatter (String configFile) throws Exception
 	{
+		LOGGER.info ("starting jatter");
 		Config config = new Config ();
 		config.readConfig (configFile);
 		
+		LOGGER.debug ("creating a chat endpoint at");
 		final String chatEndpoint = String.format (
 			"xmpp://%s@%s:5222/%s?password=%s", config.getJabberUser (),
 			config.getJabberServer (), config.getJabberContact (),
 			config.getJabberPassword ());
+		LOGGER.debug (chatEndpoint.replaceAll ("password=.*$", "password=XXX"));
 		
+		LOGGER.debug ("creating a twitter-home endpoint");
 		final String twitterHomeEndpoint = String.format (
 			"twitter://timeline/home?type=polling&delay=%s&consumerKey=%s&consumerSecret=%s&accessToken=%s&accessTokenSecret=%s",
 			config.getTwitterPollingintervall (), config.getTwitterConsumerKey (),
 			config.getTwitterConsumerSecret (), config.getTwitterAccesstoken (),
 			config.getTwitterAccesstokenSecret ());
 		
+		LOGGER.debug ("creating a twitter-mentions endpoint");
 		final String twitterMentionsEndpoint = String.format (
 			"twitter://timeline/mentions?type=polling&delay=%s&consumerKey=%s&consumerSecret=%s&accessToken=%s&accessTokenSecret=%s",
 			config.getTwitterPollingintervall (), config.getTwitterConsumerKey (),
 			config.getTwitterConsumerSecret (), config.getTwitterAccesstoken (),
 			config.getTwitterAccesstokenSecret ());
 		
+		LOGGER.debug ("creating a twitter-updater endpoint");
 		final String twitterUpdater = String.format (
 			"twitter://timeline/user?consumerKey=%s&consumerSecret=%s&accessToken=%s&accessTokenSecret=%s",
 			config.getTwitterConsumerKey (), config.getTwitterConsumerSecret (),
@@ -168,6 +193,7 @@ public class App
 		final TwitterUpdatePreprocessor tupre = new TwitterUpdatePreprocessor ();
 		
 		Main main = new Main ();
+		LOGGER.info ("creating routes");
 		main.addRouteBuilder (new RouteBuilder ()
 		{
 			
@@ -176,9 +202,11 @@ public class App
 			public void configure () throws IOException
 			{
 				
+				LOGGER.debug ("twitter-home -> status processor -> chat");
 				from (twitterHomeEndpoint).process (twitterStatusProc)
 					.to (chatEndpoint);
 				
+				LOGGER.debug ("twitter-mentions -> status processor -> chat");
 				from (twitterMentionsEndpoint).process (twitterStatusProc)
 					.process (new Processor ()
 					{
@@ -191,6 +219,7 @@ public class App
 						}
 					}).to (chatEndpoint);
 					
+				LOGGER.debug ("chat -> decider -> twitter|bot");
 				from (chatEndpoint).choice ()
 					.when (exchange -> JabberMessageProcessor.isBotCommand (exchange))
 					.process (jabberMessageProc).to (chatEndpoint).otherwise ()
@@ -202,6 +231,7 @@ public class App
 						
 						public void process (Exchange exchange) throws Exception
 						{
+							LOGGER.debug ("chat message failed to send to twitter");
 							String payload = exchange.getIn ().getBody (String.class);
 							exchange.getIn ().setBody ("*failed*: " + payload + " (length: "
 								+ payload.length () + ")");

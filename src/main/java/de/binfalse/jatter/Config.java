@@ -26,6 +26,8 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Properties;
 
+import de.binfalse.bflog.LOGGER;
+
 
 
 /**
@@ -96,10 +98,17 @@ public class Config
 	 */
 	public void readConfig (String file) throws IOException
 	{
+		LOGGER.info("reading configuration at ", file);
 		try (InputStream in = new FileInputStream (file))
 		{
 			prop.clear ();
 			prop.load (in);
+		}
+		if (LOGGER.isDebugEnabled())
+		{
+			LOGGER.debug ("found ", prop.size(), " configuration options:");
+			for (Object s : prop.keySet())
+				LOGGER.debug(" > ", s , " -> ", prop.get(s).toString().length(), " chars");
 		}
 	}
 	
@@ -114,9 +123,16 @@ public class Config
 	 */
 	public void writeConfig (String file) throws IOException
 	{
+		LOGGER.info("writing configuration to ", file);
 		try (OutputStream out = new FileOutputStream (file))
 		{
 			prop.store (out, null);
+		}
+		if (LOGGER.isDebugEnabled())
+		{
+			LOGGER.debug ("wrote ", prop.size(), " configuration options:");
+			for (Object s : prop.keySet())
+				LOGGER.debug(" > ", s , " -> ", prop.get(s).toString().length(), " chars");
 		}
 	}
 	

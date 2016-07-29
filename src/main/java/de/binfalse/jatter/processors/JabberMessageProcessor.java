@@ -24,6 +24,7 @@ import org.apache.camel.Processor;
 import org.apache.camel.component.xmpp.XmppMessage;
 import org.jivesoftware.smack.packet.Message;
 
+import de.binfalse.bflog.LOGGER;
 import de.binfalse.jatter.Config;
 import de.binfalse.jatter.JatterTools;
 import twitter4j.Status;
@@ -33,17 +34,21 @@ import twitter4j.User;
 
 
 /**
- * @author martin
+ * The Class JabberMessageProcessor.
  *
+ * @author martin
  */
 public class JabberMessageProcessor
 	implements Processor
 {
 
+	/** The config. */
 	private Config config;
 	
 	/**
-	 * 
+	 * Instantiates a new jabber message processor.
+	 *
+	 * @param config the config
 	 */
 	public JabberMessageProcessor (Config config)
 	{
@@ -51,12 +56,28 @@ public class JabberMessageProcessor
 	}
 	
 	
+	/**
+	 * Checks if is bot command.
+	 *
+	 * @param exchange the exchange
+	 * @return true, if is bot command
+	 */
 	public static boolean isBotCommand (Exchange exchange)
 	{
-		return getSmackMessage (exchange).getBody ().startsWith ("!");
+		String s = getSmackMessage (exchange).getBody ();
+		boolean botCmd = s.startsWith ("!");
+		if (botCmd)
+			LOGGER.debug("found bot command: ", s);
+		return botCmd;
 	}
 	
 	
+	/**
+	 * Gets the smack message.
+	 *
+	 * @param exchange the exchange
+	 * @return the smack message
+	 */
 	public static Message getSmackMessage (final Exchange exchange)
 	{
 		XmppMessage xmppMessage = (XmppMessage) exchange.getIn ();
@@ -65,6 +86,9 @@ public class JabberMessageProcessor
 	}
 
 
+	/* (non-Javadoc)
+	 * @see org.apache.camel.Processor#process(org.apache.camel.Exchange)
+	 */
 	@Override
 	public void process (Exchange exchange) throws Exception
 	{
@@ -130,6 +154,13 @@ public class JabberMessageProcessor
 		exchange.getOut ().setBody (result);
 	}
 	
+	/**
+	 * Favorite.
+	 *
+	 * @param commandLine the command line
+	 * @return the string
+	 * @throws TwitterException the twitter exception
+	 */
 	private String favorite (String [] commandLine) throws TwitterException
 	{
 		if (commandLine.length == 2)
@@ -153,6 +184,13 @@ public class JabberMessageProcessor
 		return "do not understand '" + String.join (" ", commandLine) + "'.. try !help";
 	}
 	
+	/**
+	 * Delete.
+	 *
+	 * @param commandLine the command line
+	 * @return the string
+	 * @throws TwitterException the twitter exception
+	 */
 	private String delete (String [] commandLine) throws TwitterException
 	{
 		if (commandLine.length == 2)
@@ -176,6 +214,13 @@ public class JabberMessageProcessor
 		return "do not understand '" + String.join (" ", commandLine) + "'.. try !help";
 	}
 	
+	/**
+	 * Retweet.
+	 *
+	 * @param commandLine the command line
+	 * @return the string
+	 * @throws TwitterException the twitter exception
+	 */
 	private String retweet (String [] commandLine) throws TwitterException
 	{
 		if (commandLine.length == 2)
@@ -199,6 +244,13 @@ public class JabberMessageProcessor
 		return "do not understand '" + String.join (" ", commandLine) + "'.. try !help";
 	}
 	
+	/**
+	 * Unfollow.
+	 *
+	 * @param commandLine the command line
+	 * @return the string
+	 * @throws TwitterException the twitter exception
+	 */
 	private String unfollow (String [] commandLine) throws TwitterException
 	{
 		if (commandLine.length == 2)
@@ -214,6 +266,13 @@ public class JabberMessageProcessor
 		return "do not understand '" + String.join (" ", commandLine) + "'.. try !help";
 	}
 	
+	/**
+	 * Follow.
+	 *
+	 * @param commandLine the command line
+	 * @return the string
+	 * @throws TwitterException the twitter exception
+	 */
 	private String follow (String [] commandLine) throws TwitterException
 	{
 		if (commandLine.length == 2)
@@ -229,6 +288,13 @@ public class JabberMessageProcessor
 		return "do not understand '" + String.join (" ", commandLine) + "'.. try !help";
 	}
 	
+	/**
+	 * Translate user.
+	 *
+	 * @param user the user
+	 * @param profile the profile
+	 * @return the string
+	 */
 	public static String translateUser (User user, String profile)
 	{
 		String ret = "profile of *"+profile+"*\n" +
@@ -257,6 +323,13 @@ public class JabberMessageProcessor
 				return ret;
 	}
 	
+	/**
+	 * Gets the profile.
+	 *
+	 * @param commandLine the command line
+	 * @return the profile
+	 * @throws TwitterException the twitter exception
+	 */
 	private String getProfile (String [] commandLine) throws TwitterException
 	{
 		if (commandLine.length == 2)
@@ -272,6 +345,11 @@ public class JabberMessageProcessor
 		return "do not understand '" + String.join (" ", commandLine) + "'.. try !help";
 	}
 	
+	/**
+	 * Usage.
+	 *
+	 * @return the string
+	 */
 	public String usage ()
 	{
 		return "\n" +

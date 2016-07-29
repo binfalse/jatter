@@ -29,9 +29,7 @@ import java.util.HashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
+import de.binfalse.bflog.LOGGER;
 import twitter4j.Twitter;
 import twitter4j.TwitterFactory;
 import twitter4j.conf.ConfigurationBuilder;
@@ -45,11 +43,6 @@ import twitter4j.conf.ConfigurationBuilder;
  */
 public class JatterTools
 {
-	
-	
-	/** The log. */
-	private static Logger		LOG								= LoggerFactory
-		.getLogger (JatterTools.class);
 	
 	/** The url pattern. */
 	private static Pattern	urlPattern				= Pattern
@@ -78,6 +71,7 @@ public class JatterTools
 	 */
 	public static String processTwitterMessag (String msg)
 	{
+		LOGGER.debug("processing twitter message: ", msg);
 		return expandUrls (msg);
 	}
 	
@@ -91,12 +85,15 @@ public class JatterTools
 	 */
 	public static String expandUrls (String msg)
 	{
+		LOGGER.debug("expanding URLs in: ", msg);
 		
 		HashMap<String, String> map = new HashMap<String, String> ();
 		Matcher matcher = urlPattern.matcher (msg);
 		while (matcher.find ())
 		{
+			LOGGER.debug("found url: ", matcher.group ());
 			String res = expandUrl (matcher.group ());
+			LOGGER.debug("expander expanded to: ", res);
 			if (!res.equals (matcher.group ()))
 				map.put (matcher.group (), res);
 		}
@@ -143,6 +140,7 @@ public class JatterTools
 	 */
 	public static String expandUrl (String u)
 	{
+		LOGGER.debug("expanding URL: ", u);
 		try
 		{
 			URL url = new URL (u);
@@ -171,6 +169,7 @@ public class JatterTools
 				{
 					if (line.contains ("http-equiv=\"refresh\""))
 					{
+						LOGGER.debug("found an inline http-equiv: ", line, " -- trying to follow that");
 						Matcher matcher = refreshUrlPatern.matcher (line);
 						if (matcher.find ())
 						{
@@ -184,14 +183,14 @@ public class JatterTools
 					return expandUrl (newU);
 			}
 			
-			LOG.debug ("unshorting URL: " + u + " -> " + httpUrlCon.getURL ());
+			LOGGER.debug ("unshorting URL: ", u, " -> ", httpUrlCon.getURL ());
 			return httpUrlCon.getURL ().toString ();
 			
 		}
 		catch (IOException e)
 		{
 			e.printStackTrace ();
-			LOG.error ("error reading " + u, e);
+			LOGGER.error (e, "error expanding ", u);
 		}
 		return u;
 	}
