@@ -3,11 +3,11 @@
 
     <groupId>de.binfalse</groupId>
     <artifactId>jatter</artifactId>
-    <version>0.2</version>
+    <version>0.2.1</version>
     <packaging>jar</packaging>
 
     <name>jatter</name>
-    <url>http://maven.apache.org</url>
+    <url>https://binfalse.de/software/jatter/</url>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -20,6 +20,19 @@
             <distribution>repo</distribution>
         </license>
     </licenses>
+
+    <developers>
+        <developer>
+            <name>Martin Scharm</name>
+            <id>martin</id>
+            <email>mvn@binfalse.de</email>
+            <organization>BINFALSE</organization>
+            <organizationUrl>http://binfalse.de</organizationUrl>
+            <roles>
+                <role>Java Developer</role>
+            </roles>
+        </developer>
+    </developers>
 
     <dependencies>
         <dependency>
@@ -58,7 +71,27 @@
             <artifactId>BFLog</artifactId>
             <version>1.3.3</version>
         </dependency>
-    </dependencies> 
+    </dependencies>
+
+    <distributionManagement>
+        <downloadUrl>http://mvn.sems.uni-rostock.de</downloadUrl>
+        <snapshotRepository>
+            <uniqueVersion>false</uniqueVersion>
+            <id>sems-maven-repository</id>
+            <name>SEMS Maven Release Repository</name>
+            <url>scp://sems.uni-rostock.de:/home/stuff/web/mvn/snapshots/</url>
+            <layout>default</layout>
+        </snapshotRepository>
+
+        <repository>
+            <uniqueVersion>false</uniqueVersion>
+            <id>sems-maven-repository</id>
+            <name>Enterprise Systems Maven Repository</name>
+            <url>scp://sems.uni-rostock.de:/home/stuff/web/mvn/releases/</url>
+            <layout>default</layout>
+        </repository>
+    </distributionManagement>
+
     <build>
         <extensions>
             <!-- enables ssh/scp support for maven deployment -->
@@ -198,24 +231,24 @@
                                 <configuration>
                                     <target>
                                         <exec executable="docker">
-                                            <arg value="build"/>
-                                            <arg value="-t"/>
-                                            <arg value="binfalse/jatter:${project.version}"/>
-                                            <arg value="target"/>
+                                            <arg value="build" />
+                                            <arg value="-t" />
+                                            <arg value="binfalse/jatter:${project.version}" />
+                                            <arg value="target" />
                                         </exec>
                                         <exec executable="docker">
-                                            <arg value="push"/>
-                                            <arg value="binfalse/jatter:${project.version}"/>
+                                            <arg value="push" />
+                                            <arg value="binfalse/jatter:${project.version}" />
                                         </exec>
                                         <exec executable="docker">
-                                            <arg value="tag"/>
-                                            <arg value="-f"/>
-                                            <arg value="binfalse/jatter:${project.version}"/>
-                                            <arg value="binfalse/jatter:latest"/>
+                                            <arg value="tag" />
+                                            <arg value="-f" />
+                                            <arg value="binfalse/jatter:${project.version}" />
+                                            <arg value="binfalse/jatter:latest" />
                                         </exec>
                                         <exec executable="docker">
-                                            <arg value="push"/>
-                                            <arg value="binfalse/jatter:latest"/>
+                                            <arg value="push" />
+                                            <arg value="binfalse/jatter:latest" />
                                         </exec>
                                     </target>
                                 </configuration>
