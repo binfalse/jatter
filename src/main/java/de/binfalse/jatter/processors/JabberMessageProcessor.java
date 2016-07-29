@@ -360,7 +360,7 @@ public class JabberMessageProcessor
 			"*follow [USER]* start following a user\n" +  
 			"*unfollow [USER]* stop following a user\n" +  
 			"*profile [USER]* show the profile of a user - shows your profile if no USER is supplied\n" +    
-			"*location [LATITUDE,LONGITUDE]* set the location of your status updates - to unset location leave argiments empty\n" + 
+			"*location [LATITUDE,LONGITUDE]* set the location of your status updates - to unset location leave arguments empty\n" + 
 			" - [ID] is the last number in a Twitter status\n" + 
 			" - [USER] is the username of a profile";
 	}
