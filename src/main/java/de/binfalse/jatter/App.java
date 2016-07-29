@@ -76,8 +76,6 @@ public class App
 	 */
 	public static void main (String[] args) throws Exception
 	{
-		args = new String[] { "" };
-		
 		Options options = new Options ();
 		
 		Option conf = new Option ("c", "config", true, "config file path");
