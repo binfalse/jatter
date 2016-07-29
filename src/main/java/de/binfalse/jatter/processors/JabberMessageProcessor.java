@@ -123,9 +123,10 @@ public class JabberMessageProcessor
 					result += delete (msg);
 					break;
 					
-				case "location":
-					result += "location";
-					break;
+				/* TODO: find an option to set the geolocation through camel
+				 * case "location":
+					result += setLocation (msg);
+					break;*/
 					
 				case "follow":
 					result += follow (msg);
@@ -210,6 +211,41 @@ public class JabberMessageProcessor
 				return "deleted *"+id+"*\n" + TwitterStatusProcessor.translateTwitterStatus (status);
 			else
 				return "cannot find status *"+id+"*";
+		}
+		return "do not understand '" + String.join (" ", commandLine) + "'.. try !help";
+	}
+	
+	/**
+	 * Set the location for upcoming tweets.
+	 *
+	 * @param commandLine the command line
+	 * @return the string
+	 * @throws TwitterException the twitter exception
+	 */
+	private String setLocation (String [] commandLine) throws TwitterException
+	{
+		if (commandLine.length == 2)
+		{
+			String newLocation = commandLine[1];
+			
+			int pos = newLocation.indexOf (",");
+
+			String lat = newLocation.substring (0, pos);
+			String lon = newLocation.substring (pos + 1);
+
+			try
+			{
+				long a = Long.parseLong (lat);
+				long o = Long.parseLong (lon);
+				config.setTwitterLocationLatitude (a + "");
+				config.setTwitterLocationLongitude (o + "");
+			}
+			catch (NumberFormatException e)
+			{
+				return "*"+lat+"* or *"+lon+"* is not a number";
+			}
+			
+			// TODO: there is no interface for setting geolocations in camel yet 
 		}
 		return "do not understand '" + String.join (" ", commandLine) + "'.. try !help";
 	}
@@ -369,7 +405,7 @@ public class JabberMessageProcessor
 			"*follow [USER]* start following a user\n" +  
 			"*unfollow [USER]* stop following a user\n" +  
 			"*profile [USER]* show the profile of a user - shows your profile if no USER is supplied\n" +    
-			"*location [LATITUDE,LONGITUDE]* set the location of your status updates - to unset location leave arguments empty\n" + 
+			//"*location [LATITUDE,LONGITUDE]* set the location of your status updates - to unset location leave arguments empty\n" + 
 			" - [ID] is the last number in a Twitter status\n" + 
 			" - [USER] is the username of a profile";
 	}
