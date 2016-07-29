@@ -342,6 +342,15 @@ public class JabberMessageProcessor
 			else
 				return "cannot find *"+profile+"*";
 		}
+		if (commandLine.length == 1)
+		{
+			User user = JatterTools.getTwitterInstance (config).users ().showUser (JatterTools.getTwitterInstance (config).getScreenName ());
+			
+			if (user != null)
+				return translateUser (user, JatterTools.getTwitterInstance (config).getScreenName ());
+			else
+				return "cannot find your profile";
+		}
 		return "do not understand '" + String.join (" ", commandLine) + "'.. try !help";
 	}
 	
