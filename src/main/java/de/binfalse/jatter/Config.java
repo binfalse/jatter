@@ -42,6 +42,9 @@ public class Config
 	/** The prop. */
 	private Properties		prop;
 	
+	/** The general configuration for displaying time. */
+	private static String	GENERAL_TIMEFORMAT								= "general.timeformat";
+	
 	/** The jabber server. */
 	private static String	JABBER_SERVER								= "jabber.server";
 	
@@ -278,6 +281,29 @@ public class Config
 	public void setTwitterLocationLongitude (String value)
 	{
 		prop.setProperty (TWITTER_LOCATION_LONGITUDE, value);
+	}
+	
+	
+	/**
+	 * Sets the time format.
+	 *
+	 * @param value
+	 *          the new time format
+	 */
+	public void setTimeFormat (String value)
+	{
+		prop.setProperty (GENERAL_TIMEFORMAT, value);
+	}
+	
+	
+	/**
+	 * Gets the time format.
+	 *
+	 * @return the time format
+	 */
+	public String getTimeFormat ()
+	{
+		return prop.getProperty (GENERAL_TIMEFORMAT);
 	}
 	
 	

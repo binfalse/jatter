@@ -54,7 +54,7 @@ public class App
 {
 	
 	
-	public static final SimpleDateFormat printDateFormat = new SimpleDateFormat (
+	public static SimpleDateFormat printDateFormat = new SimpleDateFormat (
 		"yyyy-MM-dd HH:mm:ss");
 	
 	
@@ -155,6 +155,10 @@ public class App
 		LOGGER.info ("starting jatter");
 		Config config = new Config ();
 		config.readConfig (configFile);
+		
+		String timeFormat = config.getTimeFormat ();
+		if (timeFormat != null && timeFormat.length () > 0)
+			printDateFormat = new SimpleDateFormat (timeFormat);
 		
 		LOGGER.debug ("creating a chat endpoint at");
 		final String chatEndpoint = String.format (

@@ -1,5 +1,17 @@
 ###############################################################################################
 #
+# GENERAL
+#
+# the following configures jatter in general
+#
+# the timeformat defines how the time in jabber messages will be formated
+#
+general.timeformat=yyyy-MM-dd HH:mm:ss
+###############################################################################################
+
+
+###############################################################################################
+#
 # JABBER
 #
 # the following configures the jabber-side of jatter.
