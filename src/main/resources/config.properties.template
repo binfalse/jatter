@@ -48,6 +48,4 @@ twitter.consumer.key=
 twitter.consumer.secret=
 twitter.accesstoken=
 twitter.accesstoken.secret=
-twitter.location.latitude=
-twitter.location.longitude=
 ###############################################################################################

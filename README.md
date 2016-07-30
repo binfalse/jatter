@@ -45,7 +45,96 @@ Here I tried to send
 But as you see, jatter failed to send the message because it's 154 characters and therefore twitter didn't accept the message. Please note, that jatter actually tried to send the message and received an error from twitter. Jatter itself doesn't do any checks. That means, it Twitter decides to allow for 200 chars or only 100 from tomorrow jatter will be perfectly fine with it!
 
 
-## The Jabber side
+## Setup of Jatter
+
+The setup of jatter is a bit too difficult for my taste, as it involves 
+
+* creating a new Jabber account for jatter
+* creating a Twitter application to use their API
+* authenticating jatter with your Twitter account
+
+However, jatter will guide you through this process. In the end you will have a jatter configuration that has the following structure:
+
+	###############################################################################################
+	#
+	# GENERAL
+	#
+	# the following configures jatter in general
+	#
+	general.timeformat=yyyy-MM-dd HH:mm:ss
+	###############################################################################################
+
+
+	###############################################################################################
+	#
+	# JABBER
+	#
+	# the following configures the jabber-side of jatter.
+	#
+	jabber.server=
+	jabber.port=
+	jabber.user=
+	jabber.password=
+	jabber.contact=
+	###############################################################################################
+
+
+	###############################################################################################
+	#
+	# TWITTER
+	#
+	# the follwoing configures the twitter-side of jatter.
+	#
+	twitter.pollingintervall=60000
+	twitter.consumer.key=
+	twitter.consumer.secret=
+	twitter.accesstoken=
+	twitter.accesstoken.secret=
+	twitter.location.latitude=
+	twitter.location.longitude=
+	###############################################################################################
+
+The following options are available:
+
+### Configuring jatter in general
+
+* The `general.timeformat` configures the time format to be used in Jabber messages, for example to show you when a certain tweet was composed. You may use the [SimpleDateFormat date and time patterns](http://docs.oracle.com/javase/6/docs/api/java/text/SimpleDateFormat.html)
+
+### Configuring the Jabber side
+
+* The `jabber.server` contains either the IP address or the domain that points to the Jabber server hosting the jatter account.
+* The `jabber.port` contains the XMPP port at the `jabber.server`
+* The `jabber.user` contains the username of jatter's Jabber account at `jabber.server`
+* The `jabber.password` contains the password for jatter's Jabber account at `jabber.server`
+* The `jabber.contact` is the person that is allowed to receive updates form Twitter and send new tweets
+
+That is, jatter will try to authenticate to `jabber.user@jabber.server:jabber.port` using the password `jabber.password` and it will be listening and talking to `jabber.contact`.
+
+
+### Configuring the Twitter side
+
+* The `twitter.pollingintervall` tells jatter how often (in ms) it should ask Twitter for updates. Of course, the more frequent the better.. However, if your asking Twitter too often Twitter will deny the requests and block your jatter instance for a certain time. We recommend polling every 60 seconds (=60000ms).
+* The `twitter.consumer.key` and `twitter.consumer.secret` authenticate your jatter instance. You need to register a new Twitter App to use your jatter bot. That's a bit annoying, but it's for security reasons etc.. And it's not difficult, just have a look at **Register a new Twitter App** below.
+* The `twitter.accesstoken` and `twitter.accesstoken.secret` authenticate your Twitter account for this application, so you can read and send tweets using jatter.
+
+
+## Supplemental Material
+
+The following is not really related to jatter but necessary if you want to use it.
+
+### Register a new Twitter App
+
+To register a new Twitter application just go to [apps.twitter.com](https://apps.twitter.com/) and click *Create New App.* Fill in all the meta data about the new application, for example name it *jatter* and describe it as a *jabber-twitter-bridge*, website actually doesn't matter I think, and read and agree to the *Developer Agreement* and finally click *Create your Twitter Application*.
+
+Congratulations, you have a new Twitter application! :)
+
+Now go to the application's page and click *manage keys and access tokens*. This will get you to another page with the credentials for your App. You need to copy the *Consumer Key (API Key)* and *Consumer Secret (API Secret)* to the `twitter.consumer.key` and `twitter.consumer.secret` fields of the jatter configuration, and the *Access Token* and *Access Token Secret* to the `twitter.accesstoken` and `twitter.accesstoken.secret` fields of the jatter configuration.
+
+
+
+
+
+### Configuring the Jabber side
 
 jatter hooks into an XMPP server so listen to a contact. It behaves like a bot and waits for 
 
