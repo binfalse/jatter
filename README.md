@@ -8,6 +8,11 @@ Depending on your Jabber client and how you configured jatter your Twitter timel
 
 
 
+
+
+
+
+
 ## Interacting with the jatter Bot
 
 ### Jatter commands
@@ -43,6 +48,17 @@ Here I tried to send
 > i like jatter. it is one of the coolest tools. it makes the twitter thing super easy, especially for people who do not like twitter's browser interface...
 
 But as you see, jatter failed to send the message because it's 154 characters and therefore twitter didn't accept the message. Please note, that jatter actually tried to send the message and received an error from twitter. Jatter itself doesn't do any checks. That means, it Twitter decides to allow for 200 chars or only 100 from tomorrow jatter will be perfectly fine with it!
+
+
+
+
+
+
+
+
+
+
+
 
 
 ## Setup of Jatter
@@ -117,6 +133,16 @@ That is, jatter will try to authenticate to `jabber.user@jabber.server:jabber.po
 * The `twitter.consumer.key` and `twitter.consumer.secret` authenticate your jatter instance. You need to register a new Twitter App to use your jatter bot. That's a bit annoying, but it's for security reasons etc.. And it's not difficult, just have a look at **Register a new Twitter App** below.
 * The `twitter.accesstoken` and `twitter.accesstoken.secret` authenticate your Twitter account for this application, so you can read and send tweets using jatter.
 
+If you already registered a Twitter App you can just use the App's credentials, otherwise you need to register a new application, see **Register a new Twitter App** below.
+
+
+
+
+
+## Extend jatter
+
+### Use your URL shortener
+
 
 ## Supplemental Material
 
@@ -130,16 +156,7 @@ Congratulations, you have a new Twitter application! :)
 
 Now go to the application's page and click *manage keys and access tokens*. This will get you to another page with the credentials for your App. You need to copy the *Consumer Key (API Key)* and *Consumer Secret (API Secret)* to the `twitter.consumer.key` and `twitter.consumer.secret` fields of the jatter configuration, and the *Access Token* and *Access Token Secret* to the `twitter.accesstoken` and `twitter.accesstoken.secret` fields of the jatter configuration.
 
+### Using your google or facebook account as jatter contact
 
 
 
-
-### Configuring the Jabber side
-
-jatter hooks into an XMPP server so listen to a contact. It behaves like a bot and waits for 
-
-
-
-you could even use your google account for reading twitter
-
-extend to use your own url shortener
